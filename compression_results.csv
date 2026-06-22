@@ -1,0 +1,5 @@
+model,accuracy_percent,accuracy_delta_points,loss,packed_size_mb,size_reduction_percent,zipped_weights_size_mb,raw_keras_size_mb,single_latency_p50_ms,single_latency_mean_ms,single_latency_p95_ms,batch_latency_p50_ms,throughput_images_per_sec,nonzero_percent
+base,94.3548,0.0,0.260598,8.085,0.0,8.0806,9.2225,129.4851,145.5044,203.2531,469.5903,68.1445,100.0
+pruned,81.1828,-13.172,0.521489,4.4786,44.6059,13.5246,19.511,120.1998,127.008,161.0679,461.2244,69.3805,51.5514
+clustered,93.5484,-0.8065,0.24284,2.6222,67.5667,3.8344,9.187,123.2874,130.5159,177.1113,446.9438,71.5974,100.0
+pruned_clustered,71.7742,-22.5806,0.588558,1.869,76.8835,2.8607,9.187,119.3662,120.8159,130.8757,479.1631,66.7831,51.5514
