@@ -302,3 +302,6 @@ figures/
 CSI ov5647 camera를 사용한 최종 pipeline은 no-dashboard 기준 약 66.5 FPS, dashboard drawing 포함 기준 약 42.1 FPS로 측정되었다. 즉 최종 시스템에서 camera 30 FPS 병목은 해결되었고, dashboard를 켜는 경우 UI drawing이 새 병목으로 나타났다.
 
 이번 프로젝트를 통해 모델 정확도와 실제 embedded deployment 성능은 별개의 문제이며, quantization/pruning 같은 model-level 최적화뿐 아니라 camera I/O, preprocessing, runtime delegate, dashboard rendering까지 포함한 end-to-end evaluation이 중요함을 확인하였다.
+
+
+<img width="1840" height="397" alt="image" src="https://github.com/user-attachments/assets/bc9b1c19-0483-4460-b391-40ff7d808923" />
