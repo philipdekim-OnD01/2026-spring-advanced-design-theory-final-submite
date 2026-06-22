@@ -1,0 +1,11 @@
+name: rps_int8_nvdla
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+  - numpy=1.26.4
+  - pandas=2.2.3
+  - pillow=10.4.0
+  - pip:
+      - pycuda

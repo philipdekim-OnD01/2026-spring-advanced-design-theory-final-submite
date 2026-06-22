@@ -1,0 +1,17 @@
+.DS_Store
+.ipynb_checkpoints/
+__pycache__/
+*.py[cod]
+*.log
+*.engine
+*.calib.cache
+*.nsys-rep
+*.ncu-rep
+~$*.xlsx
+source/RPS_Dataset/
+source/artifacts/
+source/engines/
+source/results/
+source/reports/
+.conda/
+.venv/

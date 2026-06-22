@@ -1,0 +1,17 @@
+name: rps_nvdla_train
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+  - pip:
+      - tensorflow==2.15.1
+      - tf2onnx==1.16.1
+      - onnx==1.15.0
+      - opencv-python-headless==4.10.0.84
+      - pillow==10.4.0
+      - numpy==1.26.4
+      - pandas==2.2.3
+      - scikit-learn==1.5.2
+      - matplotlib==3.9.2
+      - tqdm==4.66.5
