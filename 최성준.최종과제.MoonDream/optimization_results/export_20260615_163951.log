@@ -1,0 +1,56 @@
+================================================================================
+MOONDREAM MODEL EXPORT TOOL
+================================================================================
+Model: vikhyatk/moondream2
+Output Directory: ./exported_models
+
+================================================================================
+EXPORT OPTIONS
+================================================================================
+1. PyTorch Format (Recommended) ✅
+2. TorchScript (Not supported for Moondream) ❌
+3. ONNX (Not supported for custom models) ❌
+4. Docker Deployment (Containerized) ✅
+================================================================================
+EXPORTING PYTORCH MODEL FOR DEPLOYMENT
+================================================================================
+
+Loading model...
+
+Saving FP16 model to: ./exported_models/moondream_fp16
+✅ FP16 model saved: 3680.65 MB
+✅ Deployment script created: ./exported_models/deploy_moondream.py
+✅ README created: ./exported_models/README.md
+
+================================================================================
+CREATING DOCKER DEPLOYMENT FILES
+================================================================================
+✅ Dockerfile created: ./exported_models/Dockerfile
+✅ docker-compose.yml created: ./exported_models/docker-compose.yml
+✅ Build script created: ./exported_models/build_docker.sh
+
+================================================================================
+EXPORT SUMMARY
+================================================================================
+✅ PyTorch FP16 model: ./exported_models/moondream_fp16 (3680.65 MB)
+✅ Deployment script: ./exported_models/deploy_moondream.py
+✅ Docker files: ./exported_models/Dockerfile
+✅ README: ./exported_models/README.md
+
+================================================================================
+NEXT STEPS
+================================================================================
+1. Test the exported model:
+   cd ./exported_models
+   python deploy_moondream.py
+
+2. Deploy with Docker:
+   cd ./exported_models
+   ./build_docker.sh
+
+3. Copy model to production server:
+   scp -r ./exported_models/moondream_fp16 user@server:/path/to/models/
+
+================================================================================
+EXPORT COMPLETE ✅
+================================================================================

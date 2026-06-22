@@ -1,0 +1,321 @@
+================================================================================
+MOONDREAM MODEL PRUNING BENCHMARK
+================================================================================
+Model: vikhyatk/moondream2
+Test Image: /SSD1/sjchoi/semiai/RP2-RPS-QAT-Lab/cap/20260615_155234.png
+CUDA Available: True
+CUDA Device: NVIDIA RTX A5000
+Total GPU Memory: 23.55 GB
+
+================================================================================
+ABOUT PRUNING
+================================================================================
+Model pruning removes low-magnitude weights to reduce model size.
+This benchmark tests L1 unstructured pruning at different sparsity levels.
+
+Pruning amounts to test: ['10%', '20%', '30%', '40%', '50%']
+
+================================================================================
+STEP 1: BASELINE MODEL
+================================================================================
+
+============================================================
+LOADING BASELINE MODEL (NO PRUNING)
+============================================================
+
+============================================================
+Benchmarking: Baseline (FP16, No Pruning)
+============================================================
+Total parameters: 1,927,237,104
+Zero parameters: 0 (0.00% sparse)
+
+Model Size in Memory: 3680.16 MB
+
+Memory Usage (Before Inference):
+  CPU: 834.57 MB
+  GPU: 3691.65 MB
+
+Running 2 warmup iterations...
+Running 5 benchmark iterations...
+  Run 1/5: 2430.62 ms
+  Run 2/5: 2431.76 ms
+  Run 3/5: 2435.42 ms
+  Run 4/5: 2468.07 ms
+  Run 5/5: 2462.30 ms
+
+Inference Time Statistics:
+  Average: 2445.63 ms
+  Min: 2430.62 ms
+  Max: 2468.07 ms
+
+Memory Usage (After Inference):
+  CPU: 1481.66 MB (Delta: +647.09 MB)
+  GPU: 4222.27 MB (Delta: +530.62 MB)
+
+Sample Output:
+  In the center of the image, a sleek black laptop is open and displaying lines of code on a reflective surface. To the right, a computer monitor is pos...
+
+================================================================================
+STEP 2: PRUNED MODELS
+================================================================================
+
+============================================================
+LOADING MODEL WITH 10% L1 PRUNING
+============================================================
+
+Applying L1 pruning with 10% sparsity...
+Pruned 214 Linear modules
+Achieved sparsity: 10.00%
+Making pruning permanent...
+
+============================================================
+Benchmarking: L1 Pruning (10%)
+============================================================
+Total parameters: 1,927,237,104
+Zero parameters: 182,050,972 (10.00% sparse)
+
+Model Size in Memory: 3680.16 MB
+
+Memory Usage (Before Inference):
+  CPU: 1494.80 MB
+  GPU: 3693.74 MB
+
+Running 2 warmup iterations...
+Running 5 benchmark iterations...
+  Run 1/5: 2384.18 ms
+  Run 2/5: 2383.04 ms
+  Run 3/5: 2386.79 ms
+  Run 4/5: 2388.21 ms
+  Run 5/5: 2387.07 ms
+
+Inference Time Statistics:
+  Average: 2385.86 ms
+  Min: 2383.04 ms
+  Max: 2388.21 ms
+
+Memory Usage (After Inference):
+  CPU: 1515.65 MB (Delta: +20.85 MB)
+  GPU: 4217.13 MB (Delta: +523.39 MB)
+
+Sample Output:
+  The image captures a well-equipped workspace featuring a computer monitor displaying a document in Korean. Next to it, a laptop is open, displaying li...
+
+============================================================
+LOADING MODEL WITH 20% L1 PRUNING
+============================================================
+
+Applying L1 pruning with 20% sparsity...
+Pruned 214 Linear modules
+Achieved sparsity: 20.00%
+Making pruning permanent...
+
+============================================================
+Benchmarking: L1 Pruning (20%)
+============================================================
+Total parameters: 1,927,237,104
+Zero parameters: 364,101,941 (20.00% sparse)
+
+Model Size in Memory: 3680.16 MB
+
+Memory Usage (Before Inference):
+  CPU: 1518.87 MB
+  GPU: 3692.90 MB
+
+Running 2 warmup iterations...
+Running 5 benchmark iterations...
+  Run 1/5: 2753.76 ms
+  Run 2/5: 2744.69 ms
+  Run 3/5: 2786.37 ms
+  Run 4/5: 2751.45 ms
+  Run 5/5: 2755.41 ms
+
+Inference Time Statistics:
+  Average: 2758.33 ms
+  Min: 2744.69 ms
+  Max: 2786.37 ms
+
+Memory Usage (After Inference):
+  CPU: 1526.10 MB (Delta: +7.23 MB)
+  GPU: 4214.37 MB (Delta: +521.47 MB)
+
+Sample Output:
+  The image shows a well-organized workspace featuring a computer monitor displaying text file in Korean, a laptop with a programming code visible on it...
+
+============================================================
+LOADING MODEL WITH 30% L1 PRUNING
+============================================================
+
+Applying L1 pruning with 30% sparsity...
+Pruned 214 Linear modules
+Achieved sparsity: 30.00%
+Making pruning permanent...
+
+============================================================
+Benchmarking: L1 Pruning (30%)
+============================================================
+Total parameters: 1,927,237,104
+Zero parameters: 546,152,907 (30.00% sparse)
+
+Model Size in Memory: 3680.16 MB
+
+Memory Usage (Before Inference):
+  CPU: 1519.32 MB
+  GPU: 3690.67 MB
+
+Running 2 warmup iterations...
+Running 5 benchmark iterations...
+  Run 1/5: 22243.61 ms
+  Run 2/5: 22347.22 ms
+  Run 3/5: 22285.03 ms
+  Run 4/5: 22230.33 ms
+  Run 5/5: 22310.64 ms
+
+Inference Time Statistics:
+  Average: 22283.37 ms
+  Min: 22230.33 ms
+  Max: 22347.22 ms
+
+Memory Usage (After Inference):
+  CPU: 1526.56 MB (Delta: +7.23 MB)
+  GPU: 4211.54 MB (Delta: +520.88 MB)
+
+Sample Output:
+  The image appears to be a stylized and elongated representation of a computer setup. It features a stylized computer monitor with a yellowish-and-purp...
+
+============================================================
+LOADING MODEL WITH 40% L1 PRUNING
+============================================================
+
+Applying L1 pruning with 40% sparsity...
+Pruned 214 Linear modules
+Achieved sparsity: 40.00%
+Making pruning permanent...
+
+============================================================
+Benchmarking: L1 Pruning (40%)
+============================================================
+Total parameters: 1,927,237,104
+Zero parameters: 728,203,876 (40.00% sparse)
+
+Model Size in Memory: 3680.16 MB
+
+Memory Usage (Before Inference):
+  CPU: 1519.55 MB
+  GPU: 3693.52 MB
+
+Running 2 warmup iterations...
+Running 5 benchmark iterations...
+  Run 1/5: 22091.63 ms
+  Run 2/5: 22116.70 ms
+  Run 3/5: 22214.26 ms
+  Run 4/5: 22097.74 ms
+  Run 5/5: 22043.97 ms
+
+Inference Time Statistics:
+  Average: 22112.86 ms
+  Min: 22043.97 ms
+  Max: 22214.26 ms
+
+Memory Usage (After Inference):
+  CPU: 1534.14 MB (Delta: +14.59 MB)
+  GPU: 4222.48 MB (Delta: +528.96 MB)
+
+Sample Output:
+  The image is a stylized simple, ornamental-style with a large a simple-specific a set of tatto of The Yorks is a greatThe ." The is a vousAla-style wi...
+
+============================================================
+LOADING MODEL WITH 50% L1 PRUNING
+============================================================
+
+Applying L1 pruning with 50% sparsity...
+Pruned 214 Linear modules
+Achieved sparsity: 50.00%
+Making pruning permanent...
+
+============================================================
+Benchmarking: L1 Pruning (50%)
+============================================================
+Total parameters: 1,927,237,104
+Zero parameters: 910,254,848 (50.00% sparse)
+
+Model Size in Memory: 3680.16 MB
+
+Memory Usage (Before Inference):
+  CPU: 1519.63 MB
+  GPU: 3690.02 MB
+
+Running 2 warmup iterations...
+Running 5 benchmark iterations...
+  Run 1/5: 22169.14 ms
+  Run 2/5: 22138.50 ms
+  Run 3/5: 22175.96 ms
+  Run 4/5: 22172.70 ms
+  Run 5/5: 22182.24 ms
+
+Inference Time Statistics:
+  Average: 22167.71 ms
+  Min: 22138.50 ms
+  Max: 22182.24 ms
+
+Memory Usage (After Inference):
+  CPU: 1534.22 MB (Delta: +14.59 MB)
+  GPU: 4219.44 MB (Delta: +529.42 MB)
+
+Sample Output:
+  It's just a. Furthers, the is a c. Proc. Myc. Soc. caeiThis is.org is also.com
+This is.org It is.
+ nect Proc....
+"].This isis.
+"]: This is.com
+ This i...
+
+================================================================================
+PRUNING COMPARISON SUMMARY
+================================================================================
+
+Configuration                  Sparsity     Model Size      GPU Mem      Avg Time    
+                               (%)          (MB)            (MB)         (ms)        
+------------------------------------------------------------------------------------------
+Baseline (FP16, No Pruning)         0.0%      3680.16 MB    4222.27 MB    2445.63 ms
+L1 Pruning (10%)                   10.0%      3680.16 MB    4217.13 MB    2385.86 ms
+  vs Baseline                                     1.00x         1.00x         0.98x
+L1 Pruning (20%)                   20.0%      3680.16 MB    4214.37 MB    2758.33 ms
+  vs Baseline                                     1.00x         1.00x         1.13x
+L1 Pruning (30%)                   30.0%      3680.16 MB    4211.54 MB   22283.37 ms
+  vs Baseline                                     1.00x         1.00x         9.11x
+L1 Pruning (40%)                   40.0%      3680.16 MB    4222.48 MB   22112.86 ms
+  vs Baseline                                     1.00x         1.00x         9.04x
+L1 Pruning (50%)                   50.0%      3680.16 MB    4219.44 MB   22167.71 ms
+  vs Baseline                                     1.00x         1.00x         9.06x
+
+================================================================================
+KEY FINDINGS:
+================================================================================
+
+Best Configuration: L1 Pruning (10%)
+  • Sparsity: 10.0%
+  • Size reduction: 1.00x
+  • Memory reduction: 1.00x
+  • Speed impact: 0.98x
+
+================================================================================
+RECOMMENDATIONS:
+================================================================================
+• 10-20% pruning: Minimal quality loss, good for production
+• 30% pruning: Balanced size/quality trade-off
+• 40-50% pruning: Aggressive, may degrade quality significantly
+
+NOTE: Always validate output quality on your specific use case!
+Pruning affects different model architectures differently.
+
+================================================================================
+OPTIONAL: SAVE PRUNED MODEL
+================================================================================
+To save a pruned model for deployment, run:
+  python /SSD1/sjchoi/semiai/RP2-RPS-QAT-Lab/benchmark_pruning.py --save --prune-amount 0.3
+
+Or uncomment the save function in the script.
+
+================================================================================
+PRUNING BENCHMARK COMPLETE
+================================================================================

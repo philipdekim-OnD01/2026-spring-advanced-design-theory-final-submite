@@ -1,0 +1,46 @@
+System Information - Mon Jun 15 04:39:55 PM KST 2026
+================================================================================
+
+Python Version:
+Python 3.10.20
+
+PyTorch Version:
+2.12.0+cu130
+
+Transformers Version:
+4.48.3
+
+CUDA Available:
+True
+
+GPU Information:
+Mon Jun 15 16:40:02 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.126.09             Driver Version: 580.126.09     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA RTX A5000               On  |   00000000:03:00.0 Off |                  Off |
+| 30%   41C    P8             19W /  230W |      34MiB /  24564MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|    0   N/A  N/A            1557      G   /usr/lib/xorg/Xorg                        9MiB |
+|    0   N/A  N/A            1911      G   /usr/bin/gnome-shell                      4MiB |
++-----------------------------------------------------------------------------------------+
+
+CPU Information:
+Model name:                              Intel(R) Xeon(R) CPU E5-2650 v3 @ 2.30GHz
+
+Memory:
+               total        used        free      shared  buff/cache   available
+Mem:           125Gi        11Gi        35Gi       5.1Mi        80Gi       114Gi
+Swap:          8.0Gi          0B       8.0Gi
+
