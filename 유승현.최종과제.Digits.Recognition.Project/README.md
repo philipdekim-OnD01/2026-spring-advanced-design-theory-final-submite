@@ -1,4 +1,4 @@
-# Raspberry Pi Real-Time MNIST Digit Recognition
+# Raspberry Pi Real-Time Digit Recognition
 
 ## 1. Project Overview
 
