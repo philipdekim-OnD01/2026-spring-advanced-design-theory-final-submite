@@ -1,0 +1,19 @@
+# Raspberry Pi 5 / ARM64 requirements.
+numpy>=1.26
+opencv-python>=4.8
+onnxruntime>=1.17
+onnx>=1.12,<2.0
+onnxslim>=0.1.82
+Pillow>=10
+psutil>=5.9
+requests>=2.31
+huggingface-hub>=0.23
+
+# ultralytics is only required on-device if you want to export YOLO again.
+# Prefer exporting YOLOv8n ONNX on the dev machine and copying models/ to RPi5.
+ultralytics>=8.2
+
+# llama-cpp-python may need to be built from source on aarch64:
+#   CMAKE_ARGS="-DGGML_NATIVE=ON -DGGML_ARM_DOTPROD=ON -DGGML_BLAS=ON -DGGML_BLAS_VENDOR=OpenBLAS" \
+#   pip install --no-binary llama-cpp-python llama-cpp-python==0.3.9
+llama-cpp-python[server]==0.3.9

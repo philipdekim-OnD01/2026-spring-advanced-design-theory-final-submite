@@ -1,0 +1,17 @@
+# Development machine dependencies.
+# Python 3.10+ recommended.
+numpy>=1.26
+opencv-python>=4.8
+onnxruntime>=1.17
+onnx>=1.12,<2.0
+onnxslim>=0.1.82
+ultralytics>=8.2
+Pillow>=10
+psutil>=5.9
+requests>=2.31
+huggingface-hub>=0.23
+
+# llama-cpp-python multimodal support changes across versions.
+# This version should be treated as the project pin; if the wheel lacks mtmd
+# support, rebuild from source with the matching llama.cpp options.
+llama-cpp-python[server]==0.3.9
