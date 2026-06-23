@@ -1,0 +1,7 @@
+model_strategy,accuracy_percent,model_size_mb,latency_p50_ms
+base (Dense Keras baseline),94.3548,8.085,129.4851
+pruned (Old unstructured pruning),81.1828,4.4786,120.1998
+clustered (Old codebook clustering),93.5484,2.6222,123.2874
+pruned_clustered (Old pruning + clustering),71.7742,1.869,119.3662
+hw_slim_alpha_0_5 (HW structured channel slimming),96.7742,6.0737,117.1262
+base_int8.int8 (HW INT8 quantization),96.2366,2.586,2.4027
