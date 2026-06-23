@@ -1,0 +1,3 @@
+model,size_kb,gzip_kb,accuracy,infer_ms,path
+float,8706.6,8051.4,1.0,9.206,files/save/fingers_float.tflite
+int8,2677.5,2158.8,1.0,9.731,files/save/fingers_int8.tflite

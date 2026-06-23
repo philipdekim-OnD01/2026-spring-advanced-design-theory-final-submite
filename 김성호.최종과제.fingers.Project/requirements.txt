@@ -1,0 +1,8 @@
+# Training / quantization (dev PC with TensorFlow)
+tensorflow>=2.16
+numpy
+opencv-python
+
+# Inference on Raspberry Pi (instead of full tensorflow):
+#   pip install ai-edge-litert numpy
+#   sudo apt install -y python3-opencv

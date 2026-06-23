@@ -1,0 +1,21 @@
+# env / cache
+.venv/
+venv/
+__pycache__/
+*.pyc
+.DS_Store
+*.log
+
+# personal training data (do not publish your hand photos)
+files/fingers_real/
+files/fingers_custom/
+files/fingers/
+
+# large / intermediate model files
+*.keras
+*.h5
+
+# ignore files/save/ contents but KEEP the deployable model + labels
+files/save/*
+!files/save/fingers_int8.tflite
+!files/save/labels.txt
