@@ -1,0 +1,532 @@
+[0;34m============================================================[0m
+[0;34mChecking Requirements[0m
+[0;34m============================================================[0m
+[0;32m✅ Python found: Python 3.10.20[0m
+[0;32m✅ CUDA available: NVIDIA RTX A5000[0m
+[0;34mℹ️  Checking Python packages...[0m
+[0;32m✅ All required packages installed[0m
+
+[0;34m============================================================[0m
+[0;34mSaving System Information[0m
+[0;34m============================================================[0m
+[0;32m✅ System info saved[0m
+
+[0;34m============================================================[0m
+[0;34mSTEP 1: Baseline FP16 Benchmark[0m
+[0;34m============================================================[0m
+[0;34mℹ️  Testing original model with half precision...[0m
+================================================================================
+MOONDREAM MODEL QUANTIZATION BENCHMARK
+================================================================================
+Model: vikhyatk/moondream2
+Test Image: /SSD1/sjchoi/semiai/RP2-RPS-QAT-Lab/cap/20260615_155234.png
+CUDA Available: True
+CUDA Device: NVIDIA RTX A5000
+Total GPU Memory: 23.55 GB
+
+================================================================================
+ABOUT THIS BENCHMARK
+================================================================================
+Moondream uses a custom architecture that is not compatible with
+bitsandbytes (4-bit/8-bit) quantization due to custom layer implementations.
+
+This benchmark tests PyTorch native quantization methods:
+  • FP32 (Full Precision) - Baseline
+  • FP16 (Half Precision) - Recommended for deployment
+  • INT8 (Dynamic Quantization) - CPU only
+
+⚠️  FP32 test may fail on low VRAM GPUs. Skipping...
+If you have >8GB VRAM, you can uncomment the FP32 test in the code.
+
+============================================================
+LOADING BASELINE MODEL (FP16)
+============================================================
+
+============================================================
+Benchmarking: Baseline (FP16)
+============================================================
+Total parameters: 1,927,237,104
+Trainable parameters: 1,927,237,104
+
+Model Size in Memory: 3680.16 MB
+
+Memory Usage (Before Inference):
+  CPU: 834.16 MB
+  GPU: 3691.65 MB
+
+Running 2 warmup iterations...
+Running 5 benchmark iterations...
+  Run 1/5: 2371.06 ms
+  Run 2/5: 2311.76 ms
+  Run 3/5: 2343.97 ms
+  Run 4/5: 2320.33 ms
+  Run 5/5: 2309.37 ms
+
+Inference Time Statistics:
+  Average: 2331.30 ms
+  Min: 2309.37 ms
+  Max: 2371.06 ms
+
+Memory Usage (After Inference):
+  CPU: 1473.15 MB (Delta: +638.99 MB)
+  GPU: 4221.83 MB (Delta: +530.18 MB)
+
+Sample Output:
+  In the center of the image, a sleek black laptop is open and displaying lines of code on a reflective surface. To the right, a computer monitor is positioned on a wooden desk, angled slightly upwards....
+
+⚠️  Dynamic quantization test (may be slow on CPU)...
+Skipping dynamic quantization - not practical for this model.
+
+================================================================================
+COMPARISON SUMMARY
+================================================================================
+
+Configuration                  Model Size      GPU Memory      Avg Time       
+                               (MB)            (MB)            (ms)           
+--------------------------------------------------------------------------------
+Baseline (FP16)                   3680.16 MB      4221.83 MB      2331.30 ms
+
+================================================================================
+KEY FINDINGS:
+================================================================================
+
+================================================================================
+RECOMMENDATIONS:
+================================================================================
+• FP16 (Half Precision): Best choice for deployment - 2x memory savings, faster
+• FP32 (Full Precision): Use only if FP16 causes numerical instability
+
+NOTE: Moondream's custom architecture is not compatible with bitsandbytes
+quantization. For aggressive quantization, consider:
+  1. Model pruning techniques
+  2. Knowledge distillation to a smaller model
+  3. ONNX Runtime with quantization
+
+================================================================================
+BENCHMARK COMPLETE
+================================================================================
+[0;32m✅ Baseline benchmark completed[0m
+
+[0;34m============================================================[0m
+[0;34mSTEP 2: Model Pruning Benchmark[0m
+[0;34m============================================================[0m
+[0;34mℹ️  Testing pruned models at various sparsity levels...[0m
+================================================================================
+MOONDREAM MODEL PRUNING BENCHMARK
+================================================================================
+Model: vikhyatk/moondream2
+Test Image: /SSD1/sjchoi/semiai/RP2-RPS-QAT-Lab/cap/20260615_155234.png
+CUDA Available: True
+CUDA Device: NVIDIA RTX A5000
+Total GPU Memory: 23.55 GB
+
+================================================================================
+ABOUT PRUNING
+================================================================================
+Model pruning removes low-magnitude weights to reduce model size.
+This benchmark tests L1 unstructured pruning at different sparsity levels.
+
+Pruning amounts to test: ['10%', '20%', '30%', '40%', '50%']
+
+================================================================================
+STEP 1: BASELINE MODEL
+================================================================================
+
+============================================================
+LOADING BASELINE MODEL (NO PRUNING)
+============================================================
+
+============================================================
+Benchmarking: Baseline (FP16, No Pruning)
+============================================================
+Total parameters: 1,927,237,104
+Zero parameters: 0 (0.00% sparse)
+
+Model Size in Memory: 3680.16 MB
+
+Memory Usage (Before Inference):
+  CPU: 834.57 MB
+  GPU: 3691.65 MB
+
+Running 2 warmup iterations...
+Running 5 benchmark iterations...
+  Run 1/5: 2430.62 ms
+  Run 2/5: 2431.76 ms
+  Run 3/5: 2435.42 ms
+  Run 4/5: 2468.07 ms
+  Run 5/5: 2462.30 ms
+
+Inference Time Statistics:
+  Average: 2445.63 ms
+  Min: 2430.62 ms
+  Max: 2468.07 ms
+
+Memory Usage (After Inference):
+  CPU: 1481.66 MB (Delta: +647.09 MB)
+  GPU: 4222.27 MB (Delta: +530.62 MB)
+
+Sample Output:
+  In the center of the image, a sleek black laptop is open and displaying lines of code on a reflective surface. To the right, a computer monitor is pos...
+
+================================================================================
+STEP 2: PRUNED MODELS
+================================================================================
+
+============================================================
+LOADING MODEL WITH 10% L1 PRUNING
+============================================================
+
+Applying L1 pruning with 10% sparsity...
+Pruned 214 Linear modules
+Achieved sparsity: 10.00%
+Making pruning permanent...
+
+============================================================
+Benchmarking: L1 Pruning (10%)
+============================================================
+Total parameters: 1,927,237,104
+Zero parameters: 182,050,972 (10.00% sparse)
+
+Model Size in Memory: 3680.16 MB
+
+Memory Usage (Before Inference):
+  CPU: 1494.80 MB
+  GPU: 3693.74 MB
+
+Running 2 warmup iterations...
+Running 5 benchmark iterations...
+  Run 1/5: 2384.18 ms
+  Run 2/5: 2383.04 ms
+  Run 3/5: 2386.79 ms
+  Run 4/5: 2388.21 ms
+  Run 5/5: 2387.07 ms
+
+Inference Time Statistics:
+  Average: 2385.86 ms
+  Min: 2383.04 ms
+  Max: 2388.21 ms
+
+Memory Usage (After Inference):
+  CPU: 1515.65 MB (Delta: +20.85 MB)
+  GPU: 4217.13 MB (Delta: +523.39 MB)
+
+Sample Output:
+  The image captures a well-equipped workspace featuring a computer monitor displaying a document in Korean. Next to it, a laptop is open, displaying li...
+
+============================================================
+LOADING MODEL WITH 20% L1 PRUNING
+============================================================
+
+Applying L1 pruning with 20% sparsity...
+Pruned 214 Linear modules
+Achieved sparsity: 20.00%
+Making pruning permanent...
+
+============================================================
+Benchmarking: L1 Pruning (20%)
+============================================================
+Total parameters: 1,927,237,104
+Zero parameters: 364,101,941 (20.00% sparse)
+
+Model Size in Memory: 3680.16 MB
+
+Memory Usage (Before Inference):
+  CPU: 1518.87 MB
+  GPU: 3692.90 MB
+
+Running 2 warmup iterations...
+Running 5 benchmark iterations...
+  Run 1/5: 2753.76 ms
+  Run 2/5: 2744.69 ms
+  Run 3/5: 2786.37 ms
+  Run 4/5: 2751.45 ms
+  Run 5/5: 2755.41 ms
+
+Inference Time Statistics:
+  Average: 2758.33 ms
+  Min: 2744.69 ms
+  Max: 2786.37 ms
+
+Memory Usage (After Inference):
+  CPU: 1526.10 MB (Delta: +7.23 MB)
+  GPU: 4214.37 MB (Delta: +521.47 MB)
+
+Sample Output:
+  The image shows a well-organized workspace featuring a computer monitor displaying text file in Korean, a laptop with a programming code visible on it...
+
+============================================================
+LOADING MODEL WITH 30% L1 PRUNING
+============================================================
+
+Applying L1 pruning with 30% sparsity...
+Pruned 214 Linear modules
+Achieved sparsity: 30.00%
+Making pruning permanent...
+
+============================================================
+Benchmarking: L1 Pruning (30%)
+============================================================
+Total parameters: 1,927,237,104
+Zero parameters: 546,152,907 (30.00% sparse)
+
+Model Size in Memory: 3680.16 MB
+
+Memory Usage (Before Inference):
+  CPU: 1519.32 MB
+  GPU: 3690.67 MB
+
+Running 2 warmup iterations...
+Running 5 benchmark iterations...
+  Run 1/5: 22243.61 ms
+  Run 2/5: 22347.22 ms
+  Run 3/5: 22285.03 ms
+  Run 4/5: 22230.33 ms
+  Run 5/5: 22310.64 ms
+
+Inference Time Statistics:
+  Average: 22283.37 ms
+  Min: 22230.33 ms
+  Max: 22347.22 ms
+
+Memory Usage (After Inference):
+  CPU: 1526.56 MB (Delta: +7.23 MB)
+  GPU: 4211.54 MB (Delta: +520.88 MB)
+
+Sample Output:
+  The image appears to be a stylized and elongated representation of a computer setup. It features a stylized computer monitor with a yellowish-and-purp...
+
+============================================================
+LOADING MODEL WITH 40% L1 PRUNING
+============================================================
+
+Applying L1 pruning with 40% sparsity...
+Pruned 214 Linear modules
+Achieved sparsity: 40.00%
+Making pruning permanent...
+
+============================================================
+Benchmarking: L1 Pruning (40%)
+============================================================
+Total parameters: 1,927,237,104
+Zero parameters: 728,203,876 (40.00% sparse)
+
+Model Size in Memory: 3680.16 MB
+
+Memory Usage (Before Inference):
+  CPU: 1519.55 MB
+  GPU: 3693.52 MB
+
+Running 2 warmup iterations...
+Running 5 benchmark iterations...
+  Run 1/5: 22091.63 ms
+  Run 2/5: 22116.70 ms
+  Run 3/5: 22214.26 ms
+  Run 4/5: 22097.74 ms
+  Run 5/5: 22043.97 ms
+
+Inference Time Statistics:
+  Average: 22112.86 ms
+  Min: 22043.97 ms
+  Max: 22214.26 ms
+
+Memory Usage (After Inference):
+  CPU: 1534.14 MB (Delta: +14.59 MB)
+  GPU: 4222.48 MB (Delta: +528.96 MB)
+
+Sample Output:
+  The image is a stylized simple, ornamental-style with a large a simple-specific a set of tatto of The Yorks is a greatThe ." The is a vousAla-style wi...
+
+============================================================
+LOADING MODEL WITH 50% L1 PRUNING
+============================================================
+
+Applying L1 pruning with 50% sparsity...
+Pruned 214 Linear modules
+Achieved sparsity: 50.00%
+Making pruning permanent...
+
+============================================================
+Benchmarking: L1 Pruning (50%)
+============================================================
+Total parameters: 1,927,237,104
+Zero parameters: 910,254,848 (50.00% sparse)
+
+Model Size in Memory: 3680.16 MB
+
+Memory Usage (Before Inference):
+  CPU: 1519.63 MB
+  GPU: 3690.02 MB
+
+Running 2 warmup iterations...
+Running 5 benchmark iterations...
+  Run 1/5: 22169.14 ms
+  Run 2/5: 22138.50 ms
+  Run 3/5: 22175.96 ms
+  Run 4/5: 22172.70 ms
+  Run 5/5: 22182.24 ms
+
+Inference Time Statistics:
+  Average: 22167.71 ms
+  Min: 22138.50 ms
+  Max: 22182.24 ms
+
+Memory Usage (After Inference):
+  CPU: 1534.22 MB (Delta: +14.59 MB)
+  GPU: 4219.44 MB (Delta: +529.42 MB)
+
+Sample Output:
+  It's just a. Furthers, the is a c. Proc. Myc. Soc. caeiThis is.org is also.com
+This is.org It is.
+ nect Proc....
+"].This isis.
+"]: This is.com
+ This i...
+
+================================================================================
+PRUNING COMPARISON SUMMARY
+================================================================================
+
+Configuration                  Sparsity     Model Size      GPU Mem      Avg Time    
+                               (%)          (MB)            (MB)         (ms)        
+------------------------------------------------------------------------------------------
+Baseline (FP16, No Pruning)         0.0%      3680.16 MB    4222.27 MB    2445.63 ms
+L1 Pruning (10%)                   10.0%      3680.16 MB    4217.13 MB    2385.86 ms
+  vs Baseline                                     1.00x         1.00x         0.98x
+L1 Pruning (20%)                   20.0%      3680.16 MB    4214.37 MB    2758.33 ms
+  vs Baseline                                     1.00x         1.00x         1.13x
+L1 Pruning (30%)                   30.0%      3680.16 MB    4211.54 MB   22283.37 ms
+  vs Baseline                                     1.00x         1.00x         9.11x
+L1 Pruning (40%)                   40.0%      3680.16 MB    4222.48 MB   22112.86 ms
+  vs Baseline                                     1.00x         1.00x         9.04x
+L1 Pruning (50%)                   50.0%      3680.16 MB    4219.44 MB   22167.71 ms
+  vs Baseline                                     1.00x         1.00x         9.06x
+
+================================================================================
+KEY FINDINGS:
+================================================================================
+
+Best Configuration: L1 Pruning (10%)
+  • Sparsity: 10.0%
+  • Size reduction: 1.00x
+  • Memory reduction: 1.00x
+  • Speed impact: 0.98x
+
+================================================================================
+RECOMMENDATIONS:
+================================================================================
+• 10-20% pruning: Minimal quality loss, good for production
+• 30% pruning: Balanced size/quality trade-off
+• 40-50% pruning: Aggressive, may degrade quality significantly
+
+NOTE: Always validate output quality on your specific use case!
+Pruning affects different model architectures differently.
+
+================================================================================
+OPTIONAL: SAVE PRUNED MODEL
+================================================================================
+To save a pruned model for deployment, run:
+  python /SSD1/sjchoi/semiai/RP2-RPS-QAT-Lab/benchmark_pruning.py --save --prune-amount 0.3
+
+Or uncomment the save function in the script.
+
+================================================================================
+PRUNING BENCHMARK COMPLETE
+================================================================================
+[0;32m✅ Pruning benchmark completed[0m
+
+[0;34m============================================================[0m
+[0;34mSTEP 3: Export Optimized Models[0m
+[0;34m============================================================[0m
+[0;34mℹ️  Exporting PyTorch models for deployment...[0m
+================================================================================
+MOONDREAM MODEL EXPORT TOOL
+================================================================================
+Model: vikhyatk/moondream2
+Output Directory: ./exported_models
+
+================================================================================
+EXPORT OPTIONS
+================================================================================
+1. PyTorch Format (Recommended) ✅
+2. TorchScript (Not supported for Moondream) ❌
+3. ONNX (Not supported for custom models) ❌
+4. Docker Deployment (Containerized) ✅
+================================================================================
+EXPORTING PYTORCH MODEL FOR DEPLOYMENT
+================================================================================
+
+Loading model...
+
+Saving FP16 model to: ./exported_models/moondream_fp16
+✅ FP16 model saved: 3680.65 MB
+✅ Deployment script created: ./exported_models/deploy_moondream.py
+✅ README created: ./exported_models/README.md
+
+================================================================================
+CREATING DOCKER DEPLOYMENT FILES
+================================================================================
+✅ Dockerfile created: ./exported_models/Dockerfile
+✅ docker-compose.yml created: ./exported_models/docker-compose.yml
+✅ Build script created: ./exported_models/build_docker.sh
+
+================================================================================
+EXPORT SUMMARY
+================================================================================
+✅ PyTorch FP16 model: ./exported_models/moondream_fp16 (3680.65 MB)
+✅ Deployment script: ./exported_models/deploy_moondream.py
+✅ Docker files: ./exported_models/Dockerfile
+✅ README: ./exported_models/README.md
+
+================================================================================
+NEXT STEPS
+================================================================================
+1. Test the exported model:
+   cd ./exported_models
+   python deploy_moondream.py
+
+2. Deploy with Docker:
+   cd ./exported_models
+   ./build_docker.sh
+
+3. Copy model to production server:
+   scp -r ./exported_models/moondream_fp16 user@server:/path/to/models/
+
+================================================================================
+EXPORT COMPLETE ✅
+================================================================================
+[0;32m✅ Model export completed[0m
+
+[0;34m============================================================[0m
+[0;34mSTEP 4: Save Best Pruned Model (Optional)[0m
+[0;34m============================================================[0m
+Do you want to save a pruned model? (y/n) 
+[0;34mℹ️  Skipping model save[0m
+
+[0;34m============================================================[0m
+[0;34mSTEP 5: Generate Summary Report[0m
+[0;34m============================================================[0m
+[0;32m✅ Summary report generated: ./optimization_results/summary_report_20260615_163951.md[0m
+
+[0;34m============================================================[0m
+[0;34mPipeline Complete![0m
+[0;34m============================================================[0m
+
+[0;32m✅ All optimization tests completed[0m
+
+📊 Results Summary:
+   • Logs saved to: ./optimization_results
+   • Exported models: ./exported_models
+   • Report: ./optimization_results/summary_report_20260615_163951.md
+
+📖 Next Steps:
+   1. Review summary report:
+      cat ./optimization_results/summary_report_20260615_163951.md
+
+   2. Test exported model:
+      cd exported_models && python deploy_moondream.py
+
+   3. Deploy to production:
+      See exported_models/README.md for deployment options
+
+[0;34mℹ️  For questions, check QUANTIZATION_RESULTS.md[0m
+

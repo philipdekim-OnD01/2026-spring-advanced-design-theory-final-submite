@@ -1,0 +1,90 @@
+================================================================================
+MOONDREAM MODEL QUANTIZATION BENCHMARK
+================================================================================
+Model: vikhyatk/moondream2
+Test Image: /SSD1/sjchoi/semiai/RP2-RPS-QAT-Lab/cap/20260615_155234.png
+CUDA Available: True
+CUDA Device: NVIDIA RTX A5000
+Total GPU Memory: 23.55 GB
+
+================================================================================
+ABOUT THIS BENCHMARK
+================================================================================
+Moondream uses a custom architecture that is not compatible with
+bitsandbytes (4-bit/8-bit) quantization due to custom layer implementations.
+
+This benchmark tests PyTorch native quantization methods:
+  • FP32 (Full Precision) - Baseline
+  • FP16 (Half Precision) - Recommended for deployment
+  • INT8 (Dynamic Quantization) - CPU only
+
+⚠️  FP32 test may fail on low VRAM GPUs. Skipping...
+If you have >8GB VRAM, you can uncomment the FP32 test in the code.
+
+============================================================
+LOADING BASELINE MODEL (FP16)
+============================================================
+
+============================================================
+Benchmarking: Baseline (FP16)
+============================================================
+Total parameters: 1,927,237,104
+Trainable parameters: 1,927,237,104
+
+Model Size in Memory: 3680.16 MB
+
+Memory Usage (Before Inference):
+  CPU: 834.16 MB
+  GPU: 3691.65 MB
+
+Running 2 warmup iterations...
+Running 5 benchmark iterations...
+  Run 1/5: 2371.06 ms
+  Run 2/5: 2311.76 ms
+  Run 3/5: 2343.97 ms
+  Run 4/5: 2320.33 ms
+  Run 5/5: 2309.37 ms
+
+Inference Time Statistics:
+  Average: 2331.30 ms
+  Min: 2309.37 ms
+  Max: 2371.06 ms
+
+Memory Usage (After Inference):
+  CPU: 1473.15 MB (Delta: +638.99 MB)
+  GPU: 4221.83 MB (Delta: +530.18 MB)
+
+Sample Output:
+  In the center of the image, a sleek black laptop is open and displaying lines of code on a reflective surface. To the right, a computer monitor is positioned on a wooden desk, angled slightly upwards....
+
+⚠️  Dynamic quantization test (may be slow on CPU)...
+Skipping dynamic quantization - not practical for this model.
+
+================================================================================
+COMPARISON SUMMARY
+================================================================================
+
+Configuration                  Model Size      GPU Memory      Avg Time       
+                               (MB)            (MB)            (ms)           
+--------------------------------------------------------------------------------
+Baseline (FP16)                   3680.16 MB      4221.83 MB      2331.30 ms
+
+================================================================================
+KEY FINDINGS:
+================================================================================
+
+================================================================================
+RECOMMENDATIONS:
+================================================================================
+• FP16 (Half Precision): Best choice for deployment - 2x memory savings, faster
+• FP32 (Full Precision): Use only if FP16 causes numerical instability
+
+NOTE: Moondream's custom architecture is not compatible with bitsandbytes
+quantization. For aggressive quantization, consider:
+  1. Model pruning techniques
+  2. Knowledge distillation to a smaller model
+  3. ONNX Runtime with quantization
+
+================================================================================
+BENCHMARK COMPLETE
+================================================================================
