@@ -1,0 +1,7 @@
+{"Layers": ["Reformatting CopyNode for Input Tensor 0 to {ForeignNode[rps_dla_friendly_cnn/stem_conv/Conv2D...rps_dla_friendly_cnn/logits/BiasAdd__204]}"
+,"{ForeignNode[rps_dla_friendly_cnn/stem_conv/Conv2D...rps_dla_friendly_cnn/logits/BiasAdd__204]}"
+,"Reformatting CopyNode for Output Tensor 0 to {ForeignNode[rps_dla_friendly_cnn/stem_conv/Conv2D...rps_dla_friendly_cnn/logits/BiasAdd__204]}"
+],
+"Bindings": ["input"
+,"logits"
+]}

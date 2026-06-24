@@ -1,0 +1,17 @@
+{"Layers": ["Reformatting CopyNode for Input Tensor 0 to rps_dla_friendly_cnn/stem_conv/Conv2D + rps_dla_friendly_cnn/stem_relu/Relu"
+,"rps_dla_friendly_cnn/stem_conv/Conv2D + rps_dla_friendly_cnn/stem_relu/Relu"
+,"rps_dla_friendly_cnn/block1a_conv/Conv2D + rps_dla_friendly_cnn/block1a_relu/Relu"
+,"rps_dla_friendly_cnn/block1b_conv/Conv2D + rps_dla_friendly_cnn/block1b_relu/Relu"
+,"rps_dla_friendly_cnn/block2a_conv/Conv2D + rps_dla_friendly_cnn/block2a_relu/Relu"
+,"rps_dla_friendly_cnn/block2b_conv/Conv2D + rps_dla_friendly_cnn/block2b_relu/Relu"
+,"rps_dla_friendly_cnn/block3a_conv/Conv2D + rps_dla_friendly_cnn/block3a_relu/Relu"
+,"rps_dla_friendly_cnn/block3b_conv/Conv2D + rps_dla_friendly_cnn/block3b_relu/Relu"
+,"rps_dla_friendly_cnn/block4a_conv/Conv2D + rps_dla_friendly_cnn/block4a_relu/Relu"
+,"rps_dla_friendly_cnn/avg_pool/AvgPool"
+,"Reformatting CopyNode for Input Tensor 0 to rps_dla_friendly_cnn/logits/BiasAdd"
+,"rps_dla_friendly_cnn/logits/BiasAdd"
+,"rps_dla_friendly_cnn/logits/BiasAdd__204"
+],
+"Bindings": ["input"
+,"logits"
+]}
