@@ -1,311 +1,109 @@
-# 2026년 1학기 설계특론 최종과제 제출 안내
+# RPS_SSD_WINNER_DETECTOR
 
-이 저장소는 **2026년 1학기 설계특론 과제 최종제출용 저장소**입니다.
+Raspberry Pi에서 가위바위보 손 모양을 SSD Object Detection 방식으로 실시간 탐지하고, 여러 플레이어의 텐서 출력값을 연산하여 승패(WINNER/LOSE/DRAW)를 실시간으로 가려내는 온디바이스 AI 융합 어플리케이션 실습 레포지토리다.
 
-학생들은 GitHub 방식으로 과제를 제출합니다.
+## 실습 목표
 
-제출 순서는 다음과 같습니다.
-1. 이 저장소를 본인 GitHub 계정으로 Fork합니다.
-2. 본인 이름과 프로젝트명으로 제출 폴더를 만듭니다.
-3. 과제 파일을 본인 폴더 안에 넣습니다.
-4. 변경 내용을 commit하고 push합니다.
-5. 원본 저장소로 Pull Request를 보냅니다.
+* Raspberry Pi에서 `RPS_PreTrained_SSD.tflite`를 이용해 실시간 다중 손 모양 탐지를 실행한다.
+* 딥러닝 모델의 출력 텐서(Bounding Box, Class ID, Confidence Score)를 파싱하는 후처리 파이프라인을 이해한다.
+* 규칙 기반의 가위바위보 게임 엔진 알고리즘 함수를 구현하여 객체 탐지 시스템과 결합한다.
+* Raspberry Pi 하드웨어 환경에서 FP32 및 INT8 양자화 경량화 모델 간의 자원 소모량과 추론 Latency 성능을 벤치마크한다.
 
-## 제출 저장소 주소
-
-아래 저장소로 제출합니다.
+## 폴더 구조
 
 ```text
-https://github.com/philipdekim-OnD01/2026-spring-advanced-design-theory-final-submite
+RSP_SSD_LAB/
+├── README.md
+├── requirements-mac.txt
+├── requirements-pi.txt
+├── assets/
+│   └── representative_images/
+├── docs/
+│   └── 라즈베리파이_SSD_오브젝트디텍션_실행매뉴얼.md
+├── models/
+│   ├── RPS_PreTrained_SSD.tflite          # 실시간 가위바위보 게임 구동용 핵심 모델
+│   ├── ssd_lite_rps.h5
+│   ├── rps_ssd_lite_fp32.tflite           # 벤치마크 비교용 FP32 모델
+│   └── rps_ssd_lite_int8.tflite           # 벤치마크 비교용 INT8 양자화 모델
+└── scripts/
+    ├── run_rps_ssd_camera.py
+    ├── EX_03_Board_RPS_PreTrained_SSD.py  
+    ├── RPS_Game_Test.py  # [핵심] 가위바위보 승패 판정 알고리즘이 구현된 메인 스크립트
+    ├── EX_01_Image_Capture.py
+    ├── quantize_rps_ssd_lite.py
+    └── benchmark_rps_ssd_lite_tflite.py
+
 ```
 
-## 제출 전에 준비할 것
-- GitHub 계정
-- 제출할 과제 파일
-* GitHub 웹에서 제출하면 Git이나 GitHub Desktop을 설치하지 않아도 됩니다.
+## 핵심 기능 및 알고리즘 구현 개요
 
-## 제출 폴더 이름 규칙
-반드시 본인 폴더를 하나 만들고, 그 안에 과제를 넣어 주세요.
-폴더 이름은 아래 형식을 사용합니다.
+기존의 객체 탐지가 단순히 손의 위치를 상자로 시각화하는 것에 그쳤다면, 본 프로젝트는 다차원 출력 데이터를 바탕으로 판단 및 액션을 취하는 애플리케이션 레이어를 통합(S/W-H/W Co-design)한 점이 핵심이다.
 
-```text
-이름.최종과제.프로젝트명
-```
+### 1. 가위바위보 상성 판정 및 승자 추출 알고리즘 (`EX_03_Board_RPS_PreTrained_SSD.py`)
 
-예시 자료참고 하세요(번호는 붙이지 않아도 됩니다)
-```text
-김철수.최종과제.Raspberry.Pi.Project
-```
+* 모델이 예측한 `class_index`를 추출하여 상성을 비교 연산하는 규칙 엔진(`judge_rules`)을 구축했다.
+* `threshold = 0.8` 이상으로 검출된 유효 객체가 **정확히 2개**인 프레임을 실시간 필터링하여 플레이어 간의 승패를 판정한다.
 
-주의사항:
-- 폴더 이름에 공백을 넣지 않습니다.
-- 프로젝트명에는 공백 대신 `.`을 사용합니다.
-- 다른 학생의 폴더를 수정하거나 삭제하지 않습니다.
+### 2. 동적 시각화 후처리 융합
 
-## 권장 제출 구조
+* **WINNER (승리):** 상자가 **초록색**으로 변경되며 클래스명 앞에 `[WINNER]` 텍스트가 바인딩된다.
+* **LOSE (패배):** 상자가 **빨간색**으로 변경되며 클래스명 앞에 `[LOSE]` 텍스트가 바인딩된다.
+* **DRAW (무승부):** 같은 모양을 내어 비겼을 경우 상자가 **파란색**으로 갱신되며 `[DRAW]` 텍스트가 표시된다.
+* 단일 손이거나 3개 이상의 객체가 잡힐 때는 판정을 유보하고 기존의 기본 바운딩 박스를 렌더링한다.
 
-예시는 다음과 같습니다.
+---
 
-```text
-.
-|-- 00.김임환교수.최종과제.SSD.on.RSP.Project/
-|   |-- README.md
-|   |-- project-page/
-|   `-- RSP_SSD_LAB/
-|-- 홍길동.최종과제.My.Project/
-|   |-- README.md
-|   |-- report.doc (or pdf)
-|   |-- source/
-|   |-- data(image)/
-|   `-- figures/
-|    
-`-- README.md
-```
+## 실행 및 구동 방법
 
-## 제출 방법 1: GitHub 웹에서 제출하기
+### 1. 하드웨어 가상환경 검증 (Raspberry Pi)
 
-파일 수가 많지 않은 일반 과제는 이 방법을 권장합니다. 터미널 명령어를 사용하지 않아도 됩니다.
-
-### 1. 제출 저장소 접속하기
-
-아래 주소로 접속합니다.
-
-```text
-https://github.com/philipdekim-OnD01/2026-spring-advanced-design-theory-final-submite
-```
-
-### 2. 저장소 Fork하기
-
-1. 오른쪽 위의 **Fork** 버튼을 누릅니다.
-2. 본인 GitHub 계정 아래에 fork를 만듭니다.
-3. Fork가 끝나면 본인 계정에 제출 저장소의 복사본이 생깁니다.
-
-주의할 점:
-- Fork는 원본 저장소의 현재 `main` 내용을 복사합니다.
-- 교수자 예시 자료인 `00.김임환교수.최종과제.SSD.on.RSP.Project` 폴더는 함께 복사됩니다.
-- 제가 Merge전까지, 정상운영 중에는 다른 학생의 제출 폴더가 본인 fork에 함께 들어오지 않습니다.
-- 만약 다른 학생 폴더가 보이더라도 수정하거나 삭제하지 말고, 본인 제출 폴더만 추가하세요.
-
-### 3. 본인 제출 폴더 만들기
-
-본인 fork 저장소에서 다음 순서로 진행합니다.
-1. **Add file**을 누릅니다.
-2. **Create new file**을 누릅니다.
-3. 파일 이름 입력칸에 아래 형식으로 입력합니다.
-
-```text
-이름.최종과제.프로젝트명/README.md
-```
-
-예시:
-
-```text
-홍길동.최종과제.Raspberry.Pi.Project/README.md
-```
-
-GitHub는 빈 폴더만 따로 만들 수 없습니다. 그래서 `폴더명/README.md`처럼 입력하면 폴더와 README 파일이 함께 만들어집니다.
-README에는 프로젝트 제목, 설명, 제출 파일 목록을 간단히 적습니다.
-
-예시:
-
-```text
-# 홍길동 최종과제
-
-## 프로젝트 제목
-
-Raspberry Pi Project
-
-## 제출 파일
-
-- report.pdf
-- source/
-- figures/
-```
-
-4. 아래쪽 **Commit changes**를 누릅니다.
-
-`Commit changes`를 누르면 본인 fork에 저장됩니다. Git 명령어로 치면 `git add`, `git commit`, `git push`를 한 것과 같습니다.
-
-### 4. 과제 파일 업로드하기
-
-1. 방금 만든 본인 제출 폴더로 들어갑니다.
-2. **Add file**을 누릅니다.
-3. **Upload files**를 누릅니다.
-4. 과제 파일 또는 폴더를 드래그 앤 드롭합니다.
-5. 아래쪽 **Commit changes**를 누릅니다.
-
-컴퓨터에 아래와 같은 폴더가 있으면 폴더 전체를 드래그 앤 드롭해도 됩니다.
-
-```text
-홍길동.최종과제.Raspberry.Pi.Project/
-|-- README.md
-|-- report.pdf
-|-- source/
-|   `-- main.py
-`-- figures/
-    `-- result.png
-```
-
-주의사항:
-
-- 빈 폴더는 업로드되지 않습니다.
-- 폴더 안에 파일이 있어야 합니다.
-- 50MB 이상의 큰 파일이나 이미지 데이터가 많을 경우에는 아래의 "제출 방법 2"를 사용하세요.
-
-### 5. Pull Request 만들기
-
-1. 본인 fork 저장소 위쪽의 **Contribute** 버튼을 누릅니다.
-2. **Open pull request**를 누릅니다.
-3. base repository가 아래 저장소인지 확인합니다.
-
-   ```text
-   philipdekim-OnD01/2026-spring-advanced-design-theory-final-submite
-   ```
-
-4. Pull Request 제목은 아래 형식으로 작성합니다.
-
-   ```text
-   [최종과제 제출] 이름
-   ```
-
-   예시:
-
-   ```text
-   [최종과제 제출] 홍길동
-   ```
-
-5. **Create pull request**를 누릅니다.
-
-Pull Request가 만들어지면 제출이 완료된 것입니다.
-
-정리하면 다음과 같습니다.
-
-```text
-Commit changes = 본인 fork에 저장/push
-Create pull request = 교수자 저장소에 제출
-```
-
-학생이 본인 fork에 저장하거나 Pull Request를 만들어도, 원본 저장소의 `main`에는 바로 들어가지 않습니다. 교수자가 **Merge pull request**를 눌러야만 원본 `main`에 반영됩니다.
-
-## 제출 방법 2: 파일이 많거나 큰 데이터가 있는 경우
-
-이미지 데이터, 영상, 큰 모델 파일, ZIP 파일처럼 파일이 많거나 용량이 큰 경우에는 GitHub 저장소에 모두 직접 올리지 마세요.
-
-권장 방법은 다음과 같습니다.
-
-1. 본인 제출 폴더에는 `README.md`, 보고서, 핵심 코드만 올립니다.
-2. 이미지 데이터, 데이터셋, 영상, 큰 모델 파일은 Google Drive 또는 OneDrive에 업로드합니다.
-3. 공유 권한을 "링크가 있는 사람은 보기 가능"으로 설정합니다.
-4. 본인 제출 폴더의 `README.md`에 다운로드 링크를 적습니다.
-
-예시:
-
-```text
-홍길동.최종과제.Image.Dataset.Project/
-|-- README.md
-|-- report.pdf
-`-- source/
-    `-- train.py
-```
-
-`README.md` 안에는 아래처럼 적습니다.
-
-```text
-# 홍길동 최종과제
-
-## 큰 파일 다운로드
-
-- Image dataset: https://drive.google.com/...
-- Trained model: https://drive.google.com/...
-- Demo video: https://drive.google.com/...
-```
-
-50MB 이상의 파일은 이 방법을 사용하세요. 100MB 이상의 파일은 일반 GitHub push가 차단될 수 있습니다.
-
-GitHub Desktop 또는 터미널 사용이 익숙한 학생은 본인 fork를 clone해서 작업한 뒤 commit/push해도 됩니다. 하지만 큰 파일은 여전히 Drive/OneDrive 링크로 제출하는 것을 권장합니다.
-
-## 제출 후 수정하고 싶을 때
-
-GitHub 웹에서 수정하는 경우:
-
-1. 본인 fork 저장소로 이동합니다.
-2. 수정할 파일을 다시 업로드하거나 README를 수정합니다.
-3. **Commit changes**를 누릅니다.
-
-이미 만든 Pull Request는 자동으로 업데이트됩니다. 새 Pull Request를 다시 만들 필요가 없습니다.
-
-터미널에서 수정하는 경우에는 파일을 고친 뒤 아래 명령을 실행합니다.
+가상환경 내 배포용 패키지가 정상 동작하는지 터미널에서 사전 확인한다.
 
 ```bash
-git add .
-git commit -m "Update assignment submission"
-git push
+cd ~/camera_test/cnn/examples/05_Object_Detection_Based_On-Device_AI
+~/camera_test/.venv311/bin/python - <<'PY'
+import importlib.util
+for m in ["cv2", "numpy", "tflite_runtime"]:
+    print(m, bool(importlib.util.find_spec(m)))
+PY
+
 ```
 
-## 제출 규칙
+### 2. 가위바위보 승자 디텍터 구동
 
-- Pull Request로만 제출합니다.
-- 과제 파일은 반드시 본인 폴더 안에 넣습니다.
-- 다른 학생의 폴더나 파일을 수정하지 않습니다.
-- 다른 학생의 과제를 제출하지 않습니다.
-- `.DS_Store`, `.ipynb_checkpoints`, 임시 파일, 과제와 무관한 큰 데이터 파일은 넣지 않습니다.
-- 50MB 이상의 큰 파일은 저장소에 직접 올리지 말고, 위의 "제출 방법 2"를 따릅니다.
-- 제출 시간은 Pull Request 생성 시간과 commit 기록을 기준으로 확인할 수 있습니다.
+라즈베리 파이 로컬 터미널 혹은 디스플레이가 연결된 환경에서 승패 판정 알고리즘 스크립트를 다이렉트로 실행한다.
 
-## 제출물 Merge 운영 방식
+```bash
+cd ~/camera_test/cnn/examples/05_Object_Detection_Based_On-Device_AI
+~/camera_test/.venv311/bin/python RPS_Game_Test.py
 
-학생들이 fork할 때는 그 시점의 원본 저장소 내용이 복사됩니다. 따라서 다른 학생의 제출물이 원본 저장소에 merge되어 있으면, 나중에 fork하는 학생은 그 제출물까지 함께 복사하게 됩니다.
-이를 방지하기 위해 이 과제 저장소는 다음 방식으로 운영합니다.
+```
 
-- 학생은 본인 fork에 push한 뒤 원본 저장소로 Pull Request를 만듭니다.
-- 학생은 Pull Request를 만들면 제출이 완료됩니다.
-- 학생이 push하거나 Pull Request를 만들어도 원본 저장소의 `main`에는 바로 들어가지 않습니다.
-- 교수자가 **Merge pull request**를 눌러야 원본 `main`에 반영됩니다.
-- 교수자는 마감 전까지 학생 Pull Request를 merge하지 않습니다.
-- 제출물은 원본 저장소의 **Pull requests** 탭에서 개별적으로 확인합니다.
-- 마감 후 필요할 때만 merge하거나, merge하지 않고 Pull Request 상태 그대로 채점할 수 있습니다.
+* **원격 MacBook SSH 접속 환경**에서 라즈베리파이 로컬 화면(:0)으로 카메라 창을 강제 포워딩하여 띄울 시:
+```bash
+env DISPLAY=:0 XAUTHORITY=/home/doohyun/.Xauthority ~/camera_test/.venv311/bin/python EX_03_Board_RPS_PreTrained_SSD.py
 
-따라서 학생은 다른 학생의 제출물이 포함되지 않은 기본 저장소를 fork해서 과제를 제출하면 됩니다.
+```
 
-## 제출 확인 방법
 
-Pull Request를 만든 뒤 다음을 확인하세요.
 
-- 원본 저장소의 **Pull requests** 탭에 본인의 Pull Request가 보이는지 확인합니다.
-- Pull Request 파일 목록에 본인 폴더가 보이는지 확인합니다.
-- 최종 과제 파일이 모두 포함되어 있는지 확인합니다.
-- Pull Request 제목이 `[최종과제 제출] 이름` 형식인지 확인합니다.
-- Pull Request가 아직 merge되지 않았더라도 정상 제출입니다.
-- 마감 전 수정이 필요하면 본인 fork에 다시 push하세요. 기존 Pull Request가 자동으로 업데이트됩니다.
+---
 
-## 자주 발생하는 문제
+## 모델 최적화 및 양자화 벤치마크 결과
 
-### Fork를 했는데 저장소를 못 찾겠습니다.
+하드웨어 제약 조건을 극복하기 위해 `scripts/benchmark_rps_ssd_lite_tflite.py`를 활용하여 측정한 정수 양자화(Post-Training Quantization) 전후의 성능 지표는 다음과 같다.
 
-본인 GitHub 프로필로 이동한 뒤 **Repositories** 탭을 확인하세요. Fork한 저장소가 보여야 합니다.
+| 평가 지표 | FP32 SSD-Lite 모델 | INT8 양자화 모델 | 하드웨어 개선 효과 |
+| --- | --- | --- | --- |
+| **파일 크기** | 115,876 bytes (약 113KB) | 36,768 bytes (약 36KB) | **68.3% 용량 경량화** |
+| **평균 추론 시간** | 1.89 ms | 1.39 ms | **약 1.36배 연산 가속** |
+| **`ps` CPU 사용률** | 172.0% | 148.0% | **CPU 부하 감소 (24%p↓)** |
+| **`ps` RSS 메모리** | 42.17 MB | 41.97 MB | 변동 미미 (약 0.2MB 감소) |
 
-### push가 안 됩니다.
+### 💡 벤치마크 결과 해석
 
-원본 저장소가 아니라 본인 fork를 clone했는지 확인하세요. 학생은 원본 저장소에 직접 push할 권한이 없습니다.
+1. **연산 가속 및 CPU 사용률 감소 원인:** ARM 기반 임베디드 CPU 아키텍처는 부동소수점(`float32`) 연산 장치보다 정수(`int8`) 연산을 처리할 때 하드웨어 클록 주기를 훨씬 적게 소모하므로 속도가 향상되고 연산 스트레스가 감소한다.
+2. **RSS 메모리(실제 RAM 점유)가 수십 MB대로 유지되는 이유:** 경량화 과정을 거쳐 모델의 용량은 수십 KB 수준으로 압축되었으나, 프로그램을 구동하기 위한 인프라 스택(Python 인터프리터, OpenCV 카메라 드라이버, NumPy 행렬 라이브러리 및 TFLite Runtime)이 차지하는 고유의 기본 시스템 메모리 풋프린트가 크기 때문이다.
+3. **최종 통찰:** 엣지 단의 피지컬 AI를 효과적으로 서빙하기 위해서는 네트워크 가중치의 경량화뿐만 아니라 전체 구동 소프트웨어 런타임의 경량화가 수반되어야 함을 증명한다.
 
-### Pull Request를 만든 뒤 파일을 잘못 올린 것을 발견했습니다.
-
-로컬 컴퓨터에서 파일을 수정한 뒤 다시 commit하고 push하세요. 기존 Pull Request가 자동으로 업데이트됩니다.
-
-### 다른 학생 폴더를 실수로 수정했습니다.
-
-제출 전에 해당 변경을 되돌리세요. Pull Request에는 본인 폴더의 변경만 포함되어야 합니다.
-
-### 잘못된 저장소에 제출했습니다.
-
-즉시 교수자에게 연락하고 아래 정보를 함께 보내세요.
-
-- 이름
-- 잘못 제출한 저장소 또는 Pull Request 주소
-- 올바른 저장소 또는 Pull Request 주소
-
-## 참고 자료
-
-- Fork 안내: <https://docs.github.com/en/get-started/quickstart/fork-a-repo>
-- Pull Request 만들기: <https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request>
-- Git 기본 설명: <https://docs.github.com/en/get-started/using-git/about-git>
+---
